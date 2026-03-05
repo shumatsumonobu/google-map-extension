@@ -2,16 +2,13 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Google Map Marker</title>
   <style>
-    html,
-    body {
-      height: 100%;
-    }
-    body {
-      margin: 0;
-    }
+    html, body { height: 100%; }
+    body { margin: 0; }
+
+    /* Floating control panel */
     .floating-panel {
       position: absolute;
       top: 10px;
@@ -28,6 +25,7 @@
 
   <google-map id="map" zoom="12" center="35.658584,139.7454316" theme="dark"></google-map>
 
+  <!-- Control buttons for marker operations -->
   <div class="floating-panel">
     <button type="button" id="addMarker">Add Marker</button>
     <button type="button" id="deleteMarkers">Delete All Markers</button>
@@ -35,51 +33,53 @@
     <button type="button" id="zoomToFit">Zoom to fit all markers</button>
   </div>
 
-  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA4upCxP6mO3hJ7e2Oykbo-I0ymRHnxHss&language=en"></script>
-  <!-- <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&language=en"></script> -->
+  <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&language=en"></script>
   <script type="module">
     import '../dist/build.esm.js';
 
     (async () => {
-      // Returns a random color.
-      function randColor() {
-        const colors = [ 'rgb(0,122,255)', 'rgb(52,199,89)', 'rgb(88,86,214)', 'rgb(255,149,0)', 'rgb(255,45,85)', 'rgb(175,82,222)', 'rgb(255,59,48)', 'rgb(90,200,250)', 'rgb(255,204,0)' ];
-        return colors[Math.floor(Math.random() * colors.length)];
-      }
-
-      // Returns random latitude and longitude.
-      function randLatLng(min = -2, max = 2) {
-        const lat = 35.658584 + (Math.random() * (max - min) + min) * .1;
-        const lng = 139.7454316 + (Math.random() * (max - min) + min) * .1;
-        return { lat, lng };
-      };
-
-      // Map element.
       const map = document.querySelector('#map');
-
-      // Marker object.
       const markers = [];
 
-      // Add a marker.
+      // Available marker colors
+      const COLORS = [
+        'rgb(0,122,255)', 'rgb(52,199,89)', 'rgb(88,86,214)',
+        'rgb(255,149,0)', 'rgb(255,45,85)', 'rgb(175,82,222)',
+        'rgb(255,59,48)', 'rgb(90,200,250)', 'rgb(255,204,0)',
+      ];
+
+      /** Pick a random color from the palette */
+      function randomColor() {
+        return COLORS[Math.floor(Math.random() * COLORS.length)];
+      }
+
+      /** Generate a random lat/lng near the map center */
+      function randomLatLng(spread = 2) {
+        const lat = 35.658584 + (Math.random() * spread * 2 - spread) * 0.1;
+        const lng = 139.7454316 + (Math.random() * spread * 2 - spread) * 0.1;
+        return { lat, lng };
+      }
+
+      // Add a single marker
       document.querySelector('#addMarker').addEventListener('click', async () => {
-        const marker = await map.addMarker({ color: randColor(), position: randLatLng() });
+        const marker = await map.addMarker({ color: randomColor(), position: randomLatLng() });
         markers.push(marker);
       });
 
-      // Remove all markers.
+      // Remove all markers
       document.querySelector('#deleteMarkers').addEventListener('click', () => {
         for (let marker of markers) map.removeMarker(marker);
       });
 
-      // Add lots of markers at random.
+      // Add 10 random markers at once
       document.querySelector('#addMarkers').addEventListener('click', async () => {
-        for (let i=0; i<10; i++) {
-          const marker = await map.addMarker({ color: randColor(), position: randLatLng() });
+        for (let i = 0; i < 10; i++) {
+          const marker = await map.addMarker({ color: randomColor(), position: randomLatLng() });
           markers.push(marker);
         }
       });
 
-      // Zoom to fit all markers.
+      // Auto-zoom to fit every marker in view
       document.querySelector('#zoomToFit').addEventListener('click', () => {
         map.zoomToFitAllPositions(markers);
       });
