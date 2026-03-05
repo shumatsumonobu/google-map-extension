@@ -1,58 +1,35 @@
 # google-map-extension
 
-Google Map extension.
+[![NPM](https://img.shields.io/npm/v/google-map-extension.svg)](https://www.npmjs.com/package/google-map-extension)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-![all.jpg](https://raw.githubusercontent.com/takuya-motoshima/google-map-extension/master/screencap/all.jpg)
+Drop a `<google-map>` tag. Get a map. That's it.
 
-## Installation
+No boilerplate, no framework lock-in &mdash; just one Custom Element that wraps the Google Maps JavaScript API with a clean, declarative interface.
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/shumatsumonobu/google-map-extension/master/screencap/all.jpg" alt="google-map-extension overview" width="720">
+</p>
+
+---
+
+## Why?
+
+- **One tag, full map** &mdash; works out of the box with zero config
+- **6 built-in themes** &mdash; standard, silver, retro, dark, night, aubergine
+- **Markers that pop** &mdash; circles, images, and rich HTML balloons
+- **Geocoding baked in** &mdash; address &harr; coordinates in one call
+- **Distance measurement** &mdash; meters between any two points on Earth
+
+## Install
 
 ```sh
-npm install google-map-extension;
+npm install google-map-extension
 ```
 
-## API
+## Quick Start
 
-[API Documentation](./API.md)
-
-## Changelog
-
-[Changelog](./CHANGELOG.md)
-
-Below are the three latest updates.  
-
-### [1.0.14] - 2020-11-07
-
-- Added a method to measure the distance between two positions in the utility class(GoogleMapUtils#computeDistanceBetween()).
-
-### [1.0.12] - 2020-10-13
-
-- Fixed a bug where the map click event did not fire (click.map).
-
-### [1.0.11] - 2020-10-13
-
-- Corrected CSS typos in maps.
-
-### [1.0.10] - 2020-10-11
-
-- Added marker callout.
-
-    ![marker-balloon.png](https://raw.githubusercontent.com/takuya-motoshima/google-map-extension/master/screencap/marker-balloon.png)
-
-## Examples
-
-There are some examples in "./examples" in this package.Here is the first one to get you started.
-
-## Usage
-
-### Basic usage.
-
-You can use the map immediately by adding the "google-map" tag.  
-It's very convenient for non-programs because you can easily use the map without knowing JS.
-
-Example.  
-You can easily control the addition of controls, default position, zoom level, etc. with the attributes of the google-map element.
-
-```HTML
+```html
 <google-map
   zoom="12"
   center="35.658584,139.7454316"
@@ -65,223 +42,340 @@ You can easily control the addition of controls, default position, zoom level, e
 
 <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY"></script>
 <script type="module">
-  import 'google-map-extension';// Initialize google-map element
+  import 'google-map-extension';
 </script>
 ```
 
-Attribute list.  
-See [API Documentation](./API.md) for details.
+Done. You've got a dark-themed, fully interactive map with controls.
 
-<table>
-    <thead>
-        <tr><th>Attribute</th><th>Description</th></tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>zoom</td>
-            <td>The initial Map zoom level.<br></br><img src="https://raw.githubusercontent.com/takuya-motoshima/google-map-extension/master/screencap/zoom-all.jpg" height="300"></td>
-        </tr>
-        <tr>
-            <td>center</td>
-            <td>Specify the latitude and longitude of the initial position separated by commas.</td>
-        </tr>
-        <tr>
-            <td>type</td>
-            <td>The initial Map mapTypeId.<br><br><img src="https://raw.githubusercontent.com/takuya-motoshima/google-map-extension/master/screencap/type-all.jpg" height="300"></td>
-        </tr>
-        <tr>
-            <td>theme</td>
-            <td>The initial Map theme.<br><br><img src="https://raw.githubusercontent.com/takuya-motoshima/google-map-extension/master/screencap/theme-all.jpg" height="300"></td>
-        </tr>
-        <tr>
-            <td>zoom-control</td>
-            <td>Adding this attribute will display Zoom control on the map.</td>
-        </tr>
-        <tr>
-            <td>streetview-control</td>
-            <td>Adding this attribute will display Street View control on the map.</td>
-        </tr>
-        <tr>
-            <td>fullscreen-control</td>
-            <td>Adding this attribute will display Fullscreen control on the map.</td>
-        </tr>
-        <tr>
-            <td>theme-control</td>
-            <td>Adding this attribute will display Theme control on the map.<br><br><img src="https://raw.githubusercontent.com/takuya-motoshima/google-map-extension/master/screencap/control-theme.png" height="150"></td>
-        </tr>
-    </tbody>
-</table>
+## Usage
 
-#### Current location on the map.  
-
-Example.  
+### React to clicks
 
 ```js
-<google-map id="map" zoom="12" center="35.658584,139.7454316" theme="dark"></google-map>
-<script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY"></script>
-
-import 'google-map-extension';
-
-// Map element.
 const map = document.querySelector('#map');
 
-// Get position when map is clicked.
 map.on('click.map', event => {
-  // longitude latitude.
   const position = event.detail;
-  // Display the clicked position.
   map.moveToPosition(position);
 });
 ```
 
-### Map marker usage.
+### Drop a circle marker
 
-#### Display simple circle marker.  
-
-![simple-circle-marker.png](https://raw.githubusercontent.com/takuya-motoshima/google-map-extension/master/screencap/simple-circle-marker.png)
-
-Example.  
+<img src="https://raw.githubusercontent.com/shumatsumonobu/google-map-extension/master/screencap/simple-circle-marker.png" alt="circle marker" height="200">
 
 ```js
-<google-map id="map" zoom="12" center="35.658584,139.7454316" theme="dark"></google-map>
-<script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY"></script>
-
-import 'google-map-extension';
-
-// Map element.
-const map = document.querySelector('#map');
-
-// Marker color.
-const Color = {
-  blue: 'rgb(0,122,255)',
-  green: 'rgb(52,199,89)',
-  indigo: 'rgb(88,86,214)',
-  orange: 'rgb(255,149,0)',
-  pink: 'rgb(255,45,85)',
-  purple: 'rgb(175,82,222)',
-  red: 'rgb(255,59,48)',
-  teal: 'rgb(90,200,250)',
-  yellow: 'rgb(255,204,0)'
-};
-
-// Add a marker.
 const marker = await map.addMarker({
-  color: Color.blue,
+  color: 'rgb(0,122,255)',
   size: 60,
   position: { lat: 35.650584, lng: 139.7454316 }
 });
 ```
 
-#### Display custom image marker.  
+### Use your own image
 
-![simple-circle-marker.png](https://raw.githubusercontent.com/takuya-motoshima/google-map-extension/master/screencap/custom-image-marker.png)
-
-Example.  
+<img src="https://raw.githubusercontent.com/shumatsumonobu/google-map-extension/master/screencap/custom-image-marker.png" alt="image marker" height="200">
 
 ```js
-<google-map id="map" zoom="12" center="35.658584,139.7454316" theme="dark"></google-map>
-<script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY"></script>
-
-import 'google-map-extension';
-
-// Map element.
-const map = document.querySelector('#map');
-
-// Marker color.
-const Color = {
-  blue: 'rgb(0,122,255)',
-  green: 'rgb(52,199,89)',
-  indigo: 'rgb(88,86,214)',
-  orange: 'rgb(255,149,0)',
-  pink: 'rgb(255,45,85)',
-  purple: 'rgb(175,82,222)',
-  red: 'rgb(255,59,48)',
-  teal: 'rgb(90,200,250)',
-  yellow: 'rgb(255,204,0)'
-};
-
-// Add a marker.
 const marker = await map.addMarker({
-  image: 'sample.png',
-  color: Color.blue,
+  image: 'avatar.png',
+  color: 'rgb(0,122,255)',
   size: 60,
   position: { lat: 35.650584, lng: 139.7454316 }
 });
 ```
 
-#### Move the marker.
+### Attach a balloon
 
-Example.  
+<img src="https://raw.githubusercontent.com/shumatsumonobu/google-map-extension/master/screencap/marker-balloon.png" alt="marker balloon" height="200">
 
 ```js
-<google-map id="map" zoom="12" center="35.658584,139.7454316" theme="dark"></google-map>
-<script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY"></script>
-
-import 'google-map-extension';
-
-// Map element.
-const map = document.querySelector('#map');
-
-// Get position when map is clicked.
-map.on('click.map', event => {
-  // longitude latitude.
-  const position = event.detail;
-  // Move the marker to the clicked position.
-  marker.moveToPosition(position);
+const marker = await map.addMarker({
+  position: { lat: 35.650584, lng: 139.7454316 },
+  info: '<strong>Hello!</strong>'
 });
-
-// Add a marker.
-const marker = await map.addMarker();
 ```
 
-#### Remove marker.  
-
-Example.  
+### Move & remove
 
 ```js
-<google-map id="map" zoom="12" center="35.658584,139.7454316" theme="dark"></google-map>
-<script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY"></script>
+marker.moveToPosition({ lat: 35.660584, lng: 139.7554316 });
 
-import 'google-map-extension';
-
-// Map element.
-const map = document.querySelector('#map');
-
-// Add a marker.
-const marker = await map.addMarker();
-
-// Remove marker.
 map.removeMarker(marker);
 ```
 
-### Google Maps General Utility Usage
+### Geocoding & distance
 
-![utils.png](https://raw.githubusercontent.com/takuya-motoshima/google-map-extension/master/screencap/utils.png)
-
-#### Get latitude / longitude from address.
-
-Example.  
+<img src="https://raw.githubusercontent.com/shumatsumonobu/google-map-extension/master/screencap/utils.png" alt="utilities" height="200">
 
 ```js
 import { GoogleMapUtils } from 'google-map-extension';
 
-// Convert address to latitude / longitude.
-const latlng = await GoogleMapUtils.getLatLngFromAddress('1-chōme-11-21 Mita, Minato City, Tōkyō-to 108-0073, Japan');
-console.log(latlng); // { lat: 35.653172159299146, lng: 139.73969810581877 }
+// Address to coordinates
+const latlng = await GoogleMapUtils.getLatLngFromAddress('Tokyo Tower, Japan');
+// => { lat: 35.6585..., lng: 139.7454... }
+
+// Coordinates to address
+const address = await GoogleMapUtils.getAddressFromLatLng({ lat: 35.6585, lng: 139.7454 });
+
+// Distance in meters (requires libraries=geometry)
+const meters = GoogleMapUtils.computeDistanceBetween(
+  { lat: 35.6581, lng: 139.7414 },
+  { lat: 35.6706, lng: 139.7672 }
+);
 ```
 
-#### Get the address from latitude and longitude.
+---
 
-Example.  
+## API Reference
+
+### `<google-map>` Element
+
+#### Attributes
+
+| Attribute | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `zoom` | `number` | `13` | Zoom level, 1 (world) to 21 (building) |
+| `center` | `string` | `"0,0"` | Starting position &mdash; `"lat,lng"` |
+| `type` | `string` | `"roadmap"` | `roadmap` / `satellite` / `hybrid` / `terrain` |
+| `theme` | `string` | `"standard"` | `standard` / `silver` / `retro` / `dark` / `night` / `aubergine` |
+| `zoom-control` | `boolean` | &mdash; | Show zoom buttons |
+| `streetview-control` | `boolean` | &mdash; | Show Street View pegman |
+| `fullscreen-control` | `boolean` | &mdash; | Show fullscreen toggle |
+| `theme-control` | `boolean` | &mdash; | Show theme picker |
+
+<details>
+<summary>Zoom level previews</summary>
+
+<table>
+  <tr><th>Level</th><th>Preview</th><th>Level</th><th>Preview</th><th>Level</th><th>Preview</th></tr>
+  <tr><td>1</td><td><img src="https://raw.githubusercontent.com/shumatsumonobu/google-map-extension/master/screencap/zoom1.png" height="80"></td><td>8</td><td><img src="https://raw.githubusercontent.com/shumatsumonobu/google-map-extension/master/screencap/zoom8.png" height="80"></td><td>15</td><td><img src="https://raw.githubusercontent.com/shumatsumonobu/google-map-extension/master/screencap/zoom15.png" height="80"></td></tr>
+  <tr><td>2</td><td><img src="https://raw.githubusercontent.com/shumatsumonobu/google-map-extension/master/screencap/zoom2.png" height="80"></td><td>9</td><td><img src="https://raw.githubusercontent.com/shumatsumonobu/google-map-extension/master/screencap/zoom9.png" height="80"></td><td>16</td><td><img src="https://raw.githubusercontent.com/shumatsumonobu/google-map-extension/master/screencap/zoom16.png" height="80"></td></tr>
+  <tr><td>3</td><td><img src="https://raw.githubusercontent.com/shumatsumonobu/google-map-extension/master/screencap/zoom3.png" height="80"></td><td>10</td><td><img src="https://raw.githubusercontent.com/shumatsumonobu/google-map-extension/master/screencap/zoom10.png" height="80"></td><td>17</td><td><img src="https://raw.githubusercontent.com/shumatsumonobu/google-map-extension/master/screencap/zoom17.png" height="80"></td></tr>
+  <tr><td>4</td><td><img src="https://raw.githubusercontent.com/shumatsumonobu/google-map-extension/master/screencap/zoom4.png" height="80"></td><td>11</td><td><img src="https://raw.githubusercontent.com/shumatsumonobu/google-map-extension/master/screencap/zoom11.png" height="80"></td><td>18</td><td><img src="https://raw.githubusercontent.com/shumatsumonobu/google-map-extension/master/screencap/zoom18.png" height="80"></td></tr>
+  <tr><td>5</td><td><img src="https://raw.githubusercontent.com/shumatsumonobu/google-map-extension/master/screencap/zoom5.png" height="80"></td><td>12</td><td><img src="https://raw.githubusercontent.com/shumatsumonobu/google-map-extension/master/screencap/zoom12.png" height="80"></td><td>19</td><td><img src="https://raw.githubusercontent.com/shumatsumonobu/google-map-extension/master/screencap/zoom19.png" height="80"></td></tr>
+  <tr><td>6</td><td><img src="https://raw.githubusercontent.com/shumatsumonobu/google-map-extension/master/screencap/zoom6.png" height="80"></td><td>13</td><td><img src="https://raw.githubusercontent.com/shumatsumonobu/google-map-extension/master/screencap/zoom13.png" height="80"></td><td>20</td><td><img src="https://raw.githubusercontent.com/shumatsumonobu/google-map-extension/master/screencap/zoom20.png" height="80"></td></tr>
+  <tr><td>7</td><td><img src="https://raw.githubusercontent.com/shumatsumonobu/google-map-extension/master/screencap/zoom7.png" height="80"></td><td>14</td><td><img src="https://raw.githubusercontent.com/shumatsumonobu/google-map-extension/master/screencap/zoom14.png" height="80"></td><td>21</td><td><img src="https://raw.githubusercontent.com/shumatsumonobu/google-map-extension/master/screencap/zoom21.png" height="80"></td></tr>
+</table>
+
+</details>
+
+<details>
+<summary>Map type previews</summary>
+
+| Type | What you get | Preview |
+|------|-------------|---------|
+| `roadmap` | Classic road map | <img src="https://raw.githubusercontent.com/shumatsumonobu/google-map-extension/master/screencap/type-roadmap.png" height="120"> |
+| `satellite` | Google Earth imagery | <img src="https://raw.githubusercontent.com/shumatsumonobu/google-map-extension/master/screencap/type-satellite.png" height="120"> |
+| `hybrid` | Satellite + road labels | <img src="https://raw.githubusercontent.com/shumatsumonobu/google-map-extension/master/screencap/type-hybrid.png" height="120"> |
+| `terrain` | Elevation & terrain | <img src="https://raw.githubusercontent.com/shumatsumonobu/google-map-extension/master/screencap/type-terrain.png" height="120"> |
+
+</details>
+
+<details>
+<summary>Theme previews</summary>
+
+| Theme | Preview |
+|-------|---------|
+| `standard` | <img src="https://raw.githubusercontent.com/shumatsumonobu/google-map-extension/master/screencap/theme-standard.png" height="120"> |
+| `silver` | <img src="https://raw.githubusercontent.com/shumatsumonobu/google-map-extension/master/screencap/theme-silver.png" height="120"> |
+| `retro` | <img src="https://raw.githubusercontent.com/shumatsumonobu/google-map-extension/master/screencap/theme-retro.png" height="120"> |
+| `dark` | <img src="https://raw.githubusercontent.com/shumatsumonobu/google-map-extension/master/screencap/theme-dark.png" height="120"> |
+| `night` | <img src="https://raw.githubusercontent.com/shumatsumonobu/google-map-extension/master/screencap/theme-night.png" height="120"> |
+| `aubergine` | <img src="https://raw.githubusercontent.com/shumatsumonobu/google-map-extension/master/screencap/theme-aubergine.png" height="120"> |
+
+</details>
+
+#### Events
+
+##### `click.map`
+
+Fires on map click. The tapped coordinates come through `event.detail`.
+
+```js
+map.on('click.map', event => {
+  const position = event.detail; // { lat, lng }
+});
+```
+
+#### Properties
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `map` | `google.maps.Map` | Raw [Maps JavaScript API](https://developers.google.com/maps/documentation/javascript/reference/map) instance &mdash; full power when you need it |
+
+#### Methods
+
+##### `addMarker(option?)`
+
+Drop a marker on the map.
+
+```ts
+map.addMarker(option?: {
+  position?: { lat: number, lng: number },
+  size?: number,
+  visible?: boolean,
+  image?: string,
+  color?: string,
+  info?: string
+}): Promise<GoogleMapCircleMarker>
+```
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `position` | `{ lat, lng }` | Map center | Where to place the marker |
+| `size` | `number` | `50` | Diameter in pixels |
+| `visible` | `boolean` | `true` | Show on creation |
+| `image` | `string` | `undefined` | Image URL inside the marker |
+| `color` | `string` | `"rgb(0,122,255)"` | Fill color |
+| `info` | `string` | `undefined` | Balloon content (HTML ok) |
+
+**Returns** `Promise<GoogleMapCircleMarker>`
+
+##### `removeMarker(marker)`
+
+Remove a marker from the map.
+
+```ts
+map.removeMarker(marker: GoogleMapCircleMarker): GoogleMap
+```
+
+##### `moveToPosition(latlng, zoomToCurrentPosition?)`
+
+Pan the map to a new location.
+
+```ts
+map.moveToPosition(
+  latlng: google.maps.LatLng | google.maps.LatLngLiteral,
+  zoomToCurrentPosition?: boolean  // default: true
+): GoogleMap
+```
+
+##### `zoomToFitAllPositions(positions)`
+
+Auto-zoom to fit every marker or coordinate in view.
+
+```ts
+map.zoomToFitAllPositions(
+  positions: google.maps.LatLng[] |
+             google.maps.LatLngLiteral[] |
+             google.maps.Marker[] |
+             GoogleMapCircleMarker[]
+): GoogleMap
+```
+
+---
+
+### GoogleMapCircleMarker
+
+The marker object returned by `addMarker()`.
+
+#### Methods
+
+##### `moveToPosition(latlng, zoomToCurrentPosition?)`
+
+Slide the marker to a new spot.
+
+```ts
+marker.moveToPosition(
+  latlng: google.maps.LatLng | google.maps.LatLngLiteral,
+  zoomToCurrentPosition?: boolean  // default: true
+): GoogleMapCircleMarker
+```
+
+##### `getPosition()`
+
+Get the marker's current coordinates.
+
+```ts
+marker.getPosition(): google.maps.LatLngLiteral
+```
+
+##### `setVisible(visible)`
+
+Show or hide the marker.
+
+```ts
+marker.setVisible(visible: boolean): GoogleMapCircleMarker
+```
+
+##### `setInfo(content)`
+
+Set the balloon content. HTML is supported.
+
+```ts
+marker.setInfo(content: string): GoogleMapCircleMarker
+```
+
+##### `clearInfo()`
+
+Dismiss the balloon.
+
+```ts
+marker.clearInfo(): GoogleMapCircleMarker
+```
+
+---
+
+### GoogleMapUtils
+
+Standalone helpers &mdash; no map instance required.
 
 ```js
 import { GoogleMapUtils } from 'google-map-extension';
-
-// Convert address to latitude / longitude.
-const address = await GoogleMapUtils.getAddressFromLatLng({ lat: 35.653172159299146, lng: 139.73969810581877 });
-console.log(address)// '1-chōme-11-21 Mita, Minato City, Tōkyō-to 108-0073, Japan'
 ```
+
+#### Methods
+
+##### `getCurrentPosition(option?)`
+
+Grab the device's current location.
+
+```ts
+GoogleMapUtils.getCurrentPosition(option?: {
+  timeout?: number,    // ms, default: 5000
+  maximumAge?: number  // ms, default: 0
+}): Promise<google.maps.LatLngLiteral>
+```
+
+##### `getLatLngFromAddress(address)`
+
+Turn an address into coordinates.
+
+```ts
+GoogleMapUtils.getLatLngFromAddress(address: string): Promise<google.maps.LatLngLiteral>
+```
+
+##### `getAddressFromLatLng(latlng)`
+
+Turn coordinates into an address.
+
+```ts
+GoogleMapUtils.getAddressFromLatLng(
+  latlng: google.maps.LatLng | google.maps.LatLngLiteral
+): Promise<string | undefined>
+```
+
+##### `computeDistanceBetween(from, to)`
+
+Meters between two points on the globe.
+
+> Requires `libraries=geometry` in your API script tag.
+
+```ts
+GoogleMapUtils.computeDistanceBetween(
+  from: google.maps.LatLng | google.maps.LatLngLiteral,
+  to: google.maps.LatLng | google.maps.LatLngLiteral
+): number
+```
+
+---
+
+## Examples
+
+Check the [examples/](./examples) directory for working demos.
 
 ## License
 
-[MIT licensed](./LICENSE.txt)
+[MIT](./LICENSE)

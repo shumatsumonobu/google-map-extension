@@ -1,7 +1,7 @@
 {
   "name": "google-map-extension",
   "version": "1.0.14",
-  "description": "Google Map extension.",
+  "description": "Google Maps, but easier.",
   "main": "dist/build.common.js",
   "module": "dist/build.esm.js",
   "browser": "dist/build.js",
@@ -17,7 +17,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/takuya-motoshima/google-map-extension.git"
+    "url": "git+https://github.com/shumatsumonobu/google-map-extension.git"
   },
   "files": [
     "dist/*.js",
@@ -46,13 +46,13 @@
     "maps",
     "map"
   ],
-  "author": "Takuya Motoshima <developer.takuyamotoshima@gmail.com> (https://twitter.com/TakuyaMotoshima)",
+  "author": "shumatsumonobu <shumatsumonobu@gmail.com> (https://twitter.com/shumatsumonobu)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/takuya-motoshima/google-map-extension/issues",
-    "email": "developer.takuyamotoshima@gmail.com"
+    "url": "https://github.com/shumatsumonobu/google-map-extension/issues",
+    "email": "shumatsumonobu@gmail.com"
   },
-  "homepage": "https://github.com/takuya-motoshima/google-map-extension#readme",
+  "homepage": "https://github.com/shumatsumonobu/google-map-extension#readme",
   "devDependencies": {
     "@rollup/plugin-alias": "^3.1.1",
     "@types/googlemaps": "^3.39.13",

@@ -3,7 +3,6 @@ import { terser } from 'rollup-plugin-terser';
 import json from 'rollup-plugin-json';
 import commonjs from 'rollup-plugin-commonjs'
 import resolve from 'rollup-plugin-node-resolve';
-import alias from '@rollup/plugin-alias';
 import postcss from 'rollup-plugin-postcss';
 import pkg from './package.json';
 
@@ -11,7 +10,7 @@ export default {
   // external: Object.keys(pkg['dependencies'] || []),
   input: './src/index.ts',
   plugins: [
-  postcss(),
+    postcss(),
     typescript({
       tsconfigDefaults: { compilerOptions: {} },
       tsconfig: 'tsconfig.json',
