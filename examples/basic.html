@@ -3,21 +3,50 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Basic Google Map</title>
+  <title>Basic Map — google-map-extension</title>
   <style>
     html, body { height: 100%; }
-    body { margin: 0; }
+    body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+
+    .caption {
+      position: absolute;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(8px);
+      color: #fff;
+      padding: 12px 24px;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      text-align: center;
+      line-height: 1.5;
+      pointer-events: none;
+      z-index: 1;
+    }
+    .caption strong { color: rgb(0,122,255); }
   </style>
 </head>
 <body>
 
-  <!-- Full-screen dark map with theme switcher -->
+  <!--
+    Demo: Basic Map
+    Shows a full-screen dark-themed map with image markers and a theme
+    switcher. Clicking the map moves the first marker to the clicked location.
+  -->
+
   <google-map
     id="map"
     zoom="12"
     center="35.658584,139.7454316"
     theme="dark"
     theme-control></google-map>
+
+  <div class="caption">
+    <strong>9 image markers</strong> with custom colors and sizes.<br>
+    Click anywhere on the map to move the blue marker.
+    Use the dropdown (top-left) to switch themes.
+  </div>
 
   <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&language=en"></script>
   <script type="module">

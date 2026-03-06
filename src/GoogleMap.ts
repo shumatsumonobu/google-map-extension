@@ -5,18 +5,45 @@ import GoogleMapCircleMarker from '~/GoogleMapCircleMarker';
 import GoogleMapCircleMarkerOption from '~/interface/GoogleMapCircleMarkerOption';
 import GoogleMapOption from '~/interface/GoogleMapOption';
 
+/**
+ * `<google-map>` Custom Element.
+ *
+ * A Web Component that wraps the Google Maps JavaScript API, providing a
+ * declarative, zero-config way to embed interactive maps.
+ *
+ * Supports HTML attributes for zoom, center, map type, theme, and UI controls.
+ * Emits custom DOM events (e.g. `click.map`) and exposes methods for marker
+ * management and viewport manipulation.
+ *
+ * @example
+ * ```html
+ * <google-map
+ *   zoom="12"
+ *   center="35.658584,139.7454316"
+ *   theme="dark"
+ *   zoom-control
+ *   fullscreen-control></google-map>
+ * ```
+ */
 class GoogleMap extends HTMLElement {
 
+  /** The underlying Google Maps instance. Exposed for advanced use cases. */
   public map: google.maps.Map;
+
+  /** The `<select>` element used for the theme picker control. */
   private theme!: HTMLSelectElement;
 
   /**
-   * constructor
+   * Create a new `<google-map>` element.
+   *
+   * Reads HTML attributes to configure the map, initialises the
+   * `google.maps.Map` instance, optionally attaches the theme picker,
+   * and wires up the `click.map` custom event.
    */
   constructor() {
     super();
 
-    // Map options
+    // ── Build the map options from element attributes ──────────────
     const option: GoogleMapOption = {
       zoom: 13,
       center: { lat: 0, lng: 0 },
@@ -41,13 +68,14 @@ class GoogleMap extends HTMLElement {
     if (this.getAttribute('streetview-control') !== null) option.streetViewControl = true;
     if (this.getAttribute('fullscreen-control') !== null) option.fullscreenControl = true;
 
-    // Initialize map
+    // ── Initialise the map ────────────────────────────────────────
     this.map = new google.maps.Map(this, option);
 
-    // Add theme selection UI if theme control option is enabled.
+    // ── Theme picker control ──────────────────────────────────────
+    // If the `theme-control` attribute is present, render a <select> dropdown
+    // and restore the user's last selection from a cookie.
     if (this.getAttribute('theme-control') !== null) {
       this.addThemeControl();
-      // Select the theme stored in the cookie.
       if (Cookie.get('theme') && (Cookie.get('theme') === 'standard' || Cookie.get('theme') in themes)) {
         // @ts-ignore
         const styles = Cookie.get('theme') !== 'standard' ? themes[Cookie.get('theme')] as google.maps.MapTypeStyle[] : undefined;
@@ -57,25 +85,27 @@ class GoogleMap extends HTMLElement {
       }
     }
 
-    // Returns the latitude and longitude you clicked when you clicked on the map.
+    // ── Forward native map clicks as a custom DOM event ───────────
     this.map.addListener('click', event => this.invoke('click.map', { lat: event.latLng.lat(), lng: event.latLng.lng() }));
   }
 
   /**
-   * Called every time the element is inserted into the DOM.
-   * 
-   * @return {void}
+   * Lifecycle callback — invoked each time the element is inserted into the DOM.
+   *
+   * Ensures the element has `display: block` so the map renders correctly,
+   * since custom elements default to `display: inline`.
    */
   protected connectedCallback(): void {
-    // If the display is inline, change it to a block.
     this.classList.add('google-map');
     if (getComputedStyle(this).display === 'inline') this.style.display = 'block';
   }
 
   /**
-   * Define elements
+   * Register the `<google-map>` custom element in the browser's Custom
+   * Elements registry. Safe to call multiple times — subsequent calls are
+   * no-ops.
    *
-   * @return {this}
+   * @returns The `GoogleMap` class itself (for chaining).
    */
   public static define(): any {
     if (window.customElements.get('google-map')) return this;
@@ -84,9 +114,10 @@ class GoogleMap extends HTMLElement {
   }
 
   /**
-   * Generate elements
+   * Convenience factory: defines the custom element (if not already defined)
+   * and returns a new instance.
    *
-   * @return {this}
+   * @returns A new `<google-map>` element instance.
    */
   public static createElement(): any {
     this.define();
@@ -94,23 +125,34 @@ class GoogleMap extends HTMLElement {
   }
 
   /**
-   * Add a circular marker to Google Maps
-   * 
-   * @param  {GoogleMapCircleMarkerOption} option
-   * @return {GoogleMapCircleMarker}
+   * Add a circle marker to the map.
+   *
+   * The returned marker can be moved, hidden, annotated with a balloon,
+   * or removed later via {@link removeMarker}.
+   *
+   * @param option - Marker configuration (position, size, color, image, etc.).
+   * @returns A promise that resolves to the newly created marker.
+   *
+   * @example
+   * ```js
+   * const marker = await map.addMarker({
+   *   color: 'rgb(0,122,255)',
+   *   size: 60,
+   *   position: { lat: 35.650584, lng: 139.7454316 }
+   * });
+   * ```
    */
   public async addMarker(option? : GoogleMapCircleMarkerOption): Promise<GoogleMapCircleMarker> {
-    // Returns a google map marker object.
     const circlemarker = new GoogleMapCircleMarker(this.map);
     await circlemarker.attach(option);
     return circlemarker;
   }
 
   /**
-   * Remove marker.
-   * 
-   * @param  {GoogleMapCircleMarker} marker
-   * @return {GoogleMap}
+   * Remove a marker from the map and release its resources.
+   *
+   * @param marker - The marker instance returned by {@link addMarker}.
+   * @returns This `GoogleMap` instance (for chaining).
    */
   public removeMarker(marker : GoogleMapCircleMarker): GoogleMap {
     marker.remove();
@@ -120,14 +162,23 @@ class GoogleMap extends HTMLElement {
   }
 
   /**
-   * Zoom to fit all longitude/latitude or markers.
-   * 
-   * @param  {google.maps.LatLng[]|google.maps.LatLngLiteral[]|google.maps.Marker[]|GoogleMapCircleMarker[]} positions
-   * @return {GoogleMap}
+   * Auto-zoom the viewport so that every given position or marker is visible.
+   *
+   * Accepts any mix of raw `LatLng` / `LatLngLiteral` objects, native
+   * `google.maps.Marker` instances, or `GoogleMapCircleMarker` instances.
+   *
+   * @param positions - Array of coordinates or markers to fit in view.
+   * @returns This `GoogleMap` instance (for chaining).
+   *
+   * @example
+   * ```js
+   * map.zoomToFitAllPositions([markerA, markerB, markerC]);
+   * ```
    */
   public zoomToFitAllPositions(positions: google.maps.LatLng[]|google.maps.LatLngLiteral[]|google.maps.Marker[]|GoogleMapCircleMarker[]): GoogleMap {
     const bounds = new google.maps.LatLngBounds();
     for (let position of positions) {
+      // Normalise each item into a LatLng and extend the bounding box.
       if (position instanceof google.maps.LatLng) bounds.extend(position);
       else if (position instanceof google.maps.Marker) bounds.extend(position.getPosition() as google.maps.LatLng);
       else if (position instanceof GoogleMapCircleMarker) bounds.extend((position as GoogleMapCircleMarker).getPosition());
@@ -138,11 +189,14 @@ class GoogleMap extends HTMLElement {
   }
 
   /**
-   * Move the map position.
-   * 
-   * @param  {google.maps.LatLng|google.maps.LatLngLiteral} latlng
-   * @param  {boolean}                                      zoomToCurrentPosition
-   * @return {GoogleMap}
+   * Pan (or jump) the map to a new centre position.
+   *
+   * When `zoomToCurrentPosition` is `true` (default) the transition is a
+   * smooth pan animation. When `false` the map snaps instantly.
+   *
+   * @param latlng              - Target coordinates.
+   * @param zoomToCurrentPosition - `true` = smooth pan, `false` = instant jump.
+   * @returns This `GoogleMap` instance (for chaining).
    */
   public moveToPosition(latlng: google.maps.LatLng|google.maps.LatLngLiteral, zoomToCurrentPosition: boolean = true): GoogleMap {
     if (zoomToCurrentPosition) this.map.panTo(latlng);
@@ -151,12 +205,20 @@ class GoogleMap extends HTMLElement {
   }
 
   /**
-   * Add event listener
-   * 
-   * @param  {string}           type
-   * @param  {() => void}       listener
-   * @param  {{ once: boolen }} options.once
-   * @return {GoogleMap}
+   * Subscribe to a custom DOM event on this element.
+   *
+   * This is a convenience wrapper around `addEventListener` that returns
+   * `this` for method chaining.
+   *
+   * @param type     - Event name (e.g. `"click.map"`).
+   * @param listener - Callback invoked when the event fires.
+   * @param option   - Standard listener options. Set `once: true` to auto-remove.
+   * @returns This `GoogleMap` instance (for chaining).
+   *
+   * @example
+   * ```js
+   * map.on('click.map', e => console.log(e.detail));
+   * ```
    */
    public on(type: string, listener: (event?: Event) => void, option: { once: boolean } = { once: false }): GoogleMap {
     this.addEventListener(type, listener, option);
@@ -164,11 +226,11 @@ class GoogleMap extends HTMLElement {
   }
 
   /**
-   * Remove event listener
-   * 
-   * @param  {string}     type
-   * @param  {() => void} listener
-   * @return {GoogleMap}
+   * Unsubscribe from a custom DOM event.
+   *
+   * @param type     - Event name.
+   * @param listener - The same callback reference passed to {@link on}.
+   * @returns This `GoogleMap` instance (for chaining).
    */
    public off(type: string, listener: (event?: Event) => void): GoogleMap {
     this.removeEventListener(type, listener);
@@ -176,11 +238,10 @@ class GoogleMap extends HTMLElement {
   }
 
   /**
-   * Call event listener
-   * 
-   * @param  {string} type
-   * @param  {Object}     detail
-   * @return {void}
+   * Dispatch a custom DOM event with an optional detail payload.
+   *
+   * @param type   - Event name to dispatch.
+   * @param detail - Arbitrary data attached to `event.detail`.
    */
   private invoke(type: string, detail: {} = {}): void {
     const event = new CustomEvent(type, { detail });
@@ -188,11 +249,13 @@ class GoogleMap extends HTMLElement {
   }
 
   /**
-   * Add theme control.
-   * 
-   * @return {void}
+   * Build and attach the theme picker `<select>` control to the map.
+   *
+   * The dropdown is placed at `TOP_LEFT` and persists the user's choice
+   * in a cookie so it survives page reloads.
    */
   private addThemeControl(): void {
+    // Create the <select> element and populate it with theme options.
     this.theme = document.createElement('select') as HTMLSelectElement;
     this.theme.classList.add('google-map-theme-control');
     for (let value of [ 'standard', ...Object.keys(themes) ]) {
@@ -201,12 +264,16 @@ class GoogleMap extends HTMLElement {
       option.value = value;
       this.theme.appendChild(option);
     }
+
+    // When the user picks a theme, apply the style and persist the choice.
     this.theme.addEventListener('change', (event: Event) => {
       const value = (<HTMLSelectElement>event.target).value;
       // @ts-ignore
       this.map.setOptions({ styles: value !== 'standard' ? themes[value] as google.maps.MapTypeStyle[] : undefined });
       Cookie.set('theme', value);
     });
+
+    // Place the control on the map UI.
     this.map.controls[google.maps.ControlPosition.TOP_LEFT].push(this.theme);
   }
 }

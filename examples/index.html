@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Examples — google-map-extension</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #111;
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .container { max-width: 520px; width: 100%; padding: 32px; }
+
+    h1 {
+      font-size: 1.5rem;
+      margin-bottom: 4px;
+    }
+    h1 code {
+      font-weight: 700;
+      color: rgb(0,122,255);
+    }
+    p.subtitle {
+      font-size: 0.85rem;
+      color: #666;
+      margin-bottom: 32px;
+    }
+
+    .demos { list-style: none; padding: 0; }
+    .demos li { margin-bottom: 8px; }
+    .demos a {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 20px;
+      background: #1a1a1a;
+      border-radius: 10px;
+      color: #fff;
+      text-decoration: none;
+      transition: background 0.15s;
+    }
+    .demos a:hover { background: #252525; }
+    .demos .icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+    .demos .title {
+      font-size: 0.95rem;
+      font-weight: 600;
+    }
+    .demos .desc {
+      font-size: 0.8rem;
+      color: #888;
+      margin-top: 2px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1><code>&lt;google-map&gt;</code></h1>
+    <p class="subtitle">Interactive examples — pick one to try.</p>
+
+    <ul class="demos">
+      <li>
+        <a href="basic.html">
+          <div class="icon" style="background: rgba(0,122,255,0.15); color: rgb(0,122,255);">&#9678;</div>
+          <div>
+            <div class="title">Basic Map</div>
+            <div class="desc">Full-screen map with 9 image markers and theme switcher.</div>
+          </div>
+        </a>
+      </li>
+      <li>
+        <a href="marker.html">
+          <div class="icon" style="background: rgba(52,199,89,0.15); color: rgb(52,199,89);">&#10010;</div>
+          <div>
+            <div class="title">Marker Operations</div>
+            <div class="desc">Add, remove, and auto-zoom markers on the fly.</div>
+          </div>
+        </a>
+      </li>
+      <li>
+        <a href="marker-balloon.html">
+          <div class="icon" style="background: rgba(255,45,85,0.15); color: rgb(255,45,85);">&#9993;</div>
+          <div>
+            <div class="title">Marker Balloon</div>
+            <div class="desc">Info-window balloon showing a reverse-geocoded address.</div>
+          </div>
+        </a>
+      </li>
+      <li>
+        <a href="utils.html">
+          <div class="icon" style="background: rgba(255,149,0,0.15); color: rgb(255,149,0);">&#9881;</div>
+          <div>
+            <div class="title">Utility Methods</div>
+            <div class="desc">Geocoding, reverse geocoding, and distance measurement.</div>
+          </div>
+        </a>
+      </li>
+      <li>
+        <a href="current-position.html">
+          <div class="icon" style="background: rgba(90,200,250,0.15); color: rgb(90,200,250);">&#9737;</div>
+          <div>
+            <div class="title">Current Position</div>
+            <div class="desc">Detect GPS location and explore nearby addresses.</div>
+          </div>
+        </a>
+      </li>
+    </ul>
+  </div>
+</body>
+</html>

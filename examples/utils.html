@@ -3,94 +3,214 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Google Map Utils</title>
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <title>Utilities — google-map-extension</title>
   <style>
+    * { box-sizing: border-box; margin: 0; }
     body {
-      font-family: x-locale-heading-primary, zillaslab, Palatino, "Palatino Linotype", x-locale-heading-secondary, serif;
-      background-color: #000;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #111;
       color: #fff;
     }
-    input:read-only { background: #fff !important; }
-    input:read-only:focus { box-shadow: none; cursor: default; }
+    .container { max-width: 800px; margin: 0 auto; padding: 24px; }
+    h1 { font-size: 1.4rem; margin-bottom: 4px; }
+    p.subtitle { font-size: 0.85rem; color: #666; margin-bottom: 28px; }
+    h2 { font-size: 0.85rem; margin-bottom: 12px; color: #aaa; text-transform: uppercase; letter-spacing: 0.05em; }
+
+    .card {
+      background: #1a1a1a;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    .row { display: flex; gap: 12px; margin-bottom: 12px; }
+    .row > * { flex: 1; }
+    label { display: block; font-size: 0.75rem; color: #666; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.03em; }
+    input, button {
+      width: 100%;
+      padding: 8px 12px;
+      border: 1px solid #333;
+      border-radius: 6px;
+      background: #222;
+      color: #fff;
+      font-size: 0.9rem;
+    }
+    input::placeholder { color: #555; }
+    button {
+      background: rgb(0,122,255);
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    button:hover { background: rgb(0,100,220); }
+    .result {
+      padding: 10px 14px;
+      background: #222;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      min-height: 38px;
+      color: #888;
+    }
+    .result.has-value { color: #fff; }
   </style>
 </head>
 <body>
+
+  <!--
+    Demo: Utility Methods
+    Demonstrates all three GoogleMapUtils static methods:
+      1. getLatLngFromAddress()    — forward geocoding
+      2. getAddressFromLatLng()    — reverse geocoding
+      3. computeDistanceBetween() — distance measurement
+  -->
+
   <div class="container">
-    <div class="row">
-      <main class="col-12 col-lg-7 offset-lg-2 py-md-3" role="main">
-        <h3>Reverse Geocoding &mdash; Convert Lat/Lng to Address</h3>
+    <h1>Utility Methods</h1>
+    <p class="subtitle">Geocoding and distance helpers — no map instance required.</p>
 
-        <form id="form">
-          <div class="form-row align-items-end">
-            <div class="form-group col-sm-5">
-              <label>Latitude</label>
-              <input type="text" class="form-control" name="lat" placeholder="0.000000" required>
-            </div>
-            <div class="form-group col-sm-5">
-              <label>Longitude</label>
-              <input type="text" class="form-control" name="lng" placeholder="0.000000" required>
-            </div>
-            <div class="form-group col-sm-2">
-              <button type="submit" class="btn btn-primary">Convert</button>
-            </div>
+    <!-- ① Forward geocoding -->
+    <div class="card">
+      <h2>Geocode — Address to Coordinates</h2>
+      <form id="forwardForm">
+        <div class="row">
+          <div style="flex: 3;">
+            <label>Enter an address</label>
+            <input type="text" name="address" placeholder="e.g. Tokyo Tower, Japan" required>
           </div>
-          <div class="form-group">
-            <label for="inputAddress">Address</label>
-            <input type="text" class="form-control" name="address" placeholder="1234 Main St" readonly>
+          <div style="flex: 1; align-self: flex-end;">
+            <button type="submit">Look up</button>
           </div>
-        </form>
-
-        <google-map id="map" zoom="12" center="35.658584,139.7454316" theme="dark" style="height: 400px;"></google-map>
-      </main>
+        </div>
+      </form>
+      <div id="forwardResult" class="result">Enter an address and press Look up.</div>
     </div>
+
+    <!-- ② Reverse geocoding -->
+    <div class="card">
+      <h2>Reverse Geocode — Coordinates to Address</h2>
+      <form id="reverseForm">
+        <div class="row">
+          <div>
+            <label>Latitude</label>
+            <input type="text" name="lat" placeholder="e.g. 35.658584" required>
+          </div>
+          <div>
+            <label>Longitude</label>
+            <input type="text" name="lng" placeholder="e.g. 139.7454316" required>
+          </div>
+          <div style="align-self: flex-end;">
+            <button type="submit">Look up</button>
+          </div>
+        </div>
+      </form>
+      <div id="reverseResult" class="result">Enter coordinates and press Look up.</div>
+    </div>
+
+    <!-- ③ Distance -->
+    <div class="card">
+      <h2>Distance — Meters Between Two Points</h2>
+      <form id="distanceForm">
+        <div class="row">
+          <div>
+            <label>Point A — Lat</label>
+            <input type="text" name="fromLat" placeholder="e.g. 35.6581" value="35.6581" required>
+          </div>
+          <div>
+            <label>Point A — Lng</label>
+            <input type="text" name="fromLng" placeholder="e.g. 139.7414" value="139.7414" required>
+          </div>
+        </div>
+        <div class="row">
+          <div>
+            <label>Point B — Lat</label>
+            <input type="text" name="toLat" placeholder="e.g. 35.6706" value="35.6706" required>
+          </div>
+          <div>
+            <label>Point B — Lng</label>
+            <input type="text" name="toLng" placeholder="e.g. 139.7672" value="139.7672" required>
+          </div>
+        </div>
+        <button type="submit">Measure</button>
+      </form>
+      <div id="distanceResult" class="result" style="margin-top: 12px;">Enter two points and press Measure.</div>
+    </div>
+
+    <!-- Map preview -->
+    <google-map id="map" zoom="13" center="35.658584,139.7454316" theme="dark" style="height: 350px; border-radius: 8px;"></google-map>
   </div>
 
-  <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&language=en"></script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=geometry&language=en"></script>
   <script type="module">
     import { GoogleMapUtils } from '../dist/build.esm.js';
 
-    (async () => {
-      const form = document.querySelector('#form');
-      const map = document.querySelector('#map');
+    const map = document.querySelector('#map');
 
-      /**
-       * Display a position's lat, lng, and reverse-geocoded address in the form.
-       */
-      async function displayPosition(position) {
-        form.elements.lat.value = position.lat;
-        form.elements.lng.value = position.lng;
-        form.elements.address.value = await GoogleMapUtils.getAddressFromLatLng(position);
+    /** Mark a result div as populated */
+    function showResult(id, text) {
+      const el = document.querySelector(id);
+      el.textContent = text;
+      el.classList.add('has-value');
+    }
+
+    /** Show an error in a result div */
+    function showError(id, message) {
+      const el = document.querySelector(id);
+      el.textContent = message;
+      el.classList.remove('has-value');
+    }
+
+    // ── Forward geocoding ─────────────────────────────────────────
+    document.querySelector('#forwardForm').addEventListener('submit', async event => {
+      event.preventDefault();
+      const address = event.target.elements.address.value;
+      try {
+        const latlng = await GoogleMapUtils.getLatLngFromAddress(address);
+        showResult('#forwardResult', `lat: ${latlng.lat},  lng: ${latlng.lng}`);
+
+        // Pin the result on the map
+        map.moveToPosition(latlng);
+        await map.addMarker({ position: latlng, size: 40, color: 'rgb(52,199,89)' });
+      } catch (e) {
+        showError('#forwardResult', `Could not geocode: ${e.message}`);
       }
+    });
 
-      // Get the device's current location and show it
-      const currentPosition = await GoogleMapUtils.getCurrentPosition();
-      displayPosition(currentPosition);
-      map.moveToPosition(currentPosition);
+    // ── Reverse geocoding ─────────────────────────────────────────
+    document.querySelector('#reverseForm').addEventListener('submit', async event => {
+      event.preventDefault();
+      const lat = parseFloat(event.target.elements.lat.value);
+      const lng = parseFloat(event.target.elements.lng.value);
+      try {
+        const address = await GoogleMapUtils.getAddressFromLatLng({ lat, lng });
+        showResult('#reverseResult', address || 'No address found for these coordinates.');
 
-      // Place a marker at the current location
-      const marker = await map.addMarker({ position: currentPosition, size: 30 });
+        // Pin the result on the map
+        map.moveToPosition({ lat, lng });
+        await map.addMarker({ position: { lat, lng }, size: 40, color: 'rgb(255,149,0)' });
+      } catch (e) {
+        showError('#reverseResult', `Could not reverse geocode: ${e.message}`);
+      }
+    });
 
-      // When the map is clicked, update the form and move the marker
-      map.on('click.map', async event => {
-        const clickedPosition = event.detail;
-        displayPosition(clickedPosition);
-        marker.moveToPosition(clickedPosition);
-      });
+    // ── Distance calculation ──────────────────────────────────────
+    document.querySelector('#distanceForm').addEventListener('submit', async event => {
+      event.preventDefault();
+      const from = {
+        lat: parseFloat(event.target.elements.fromLat.value),
+        lng: parseFloat(event.target.elements.fromLng.value)
+      };
+      const to = {
+        lat: parseFloat(event.target.elements.toLat.value),
+        lng: parseFloat(event.target.elements.toLng.value)
+      };
 
-      // When the form is submitted, reverse-geocode the entered coordinates
-      form.addEventListener('submit', async event => {
-        try {
-          event.preventDefault();
-          const lat = parseFloat(form.elements.lat.value);
-          const lng = parseFloat(form.elements.lng.value);
-          form.elements.address.value = await GoogleMapUtils.getAddressFromLatLng({ lat, lng });
-          marker.moveToPosition({ lat, lng });
-        } catch (e) {
-          alert(e);
-        }
-      });
-    })();
+      const meters = GoogleMapUtils.computeDistanceBetween(from, to);
+      showResult('#distanceResult', `${meters.toFixed(1)} m  (${(meters / 1000).toFixed(2)} km)`);
+
+      // Pin both points on the map
+      const markerA = await map.addMarker({ position: from, size: 40, color: 'rgb(0,122,255)' });
+      const markerB = await map.addMarker({ position: to, size: 40, color: 'rgb(255,59,48)' });
+      map.zoomToFitAllPositions([markerA, markerB]);
+    });
   </script>
 </body>
 </html>

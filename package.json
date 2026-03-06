@@ -1,6 +1,6 @@
 {
   "name": "google-map-extension",
-  "version": "1.0.14",
+  "version": "1.0.15",
   "description": "Google Maps, but easier.",
   "main": "dist/build.common.js",
   "module": "dist/build.esm.js",
@@ -26,27 +26,23 @@
     "README.md",
     "CHANGELOG.md",
     "examples",
-    "screencap"
+    "screenshots"
   ],
   "keywords": [
-    "browser",
-    "javascript",
-    "js",
-    "library",
-    "lib",
-    "module",
-    "typescript",
-    "ts",
-    "esm",
-    "es6",
-    "googlemaps",
-    "googlemap",
     "google-maps",
     "google-map",
+    "googlemaps",
     "maps",
-    "map"
+    "map",
+    "web-component",
+    "custom-element",
+    "marker",
+    "geocoding",
+    "geolocation",
+    "typescript",
+    "javascript"
   ],
-  "author": "shumatsumonobu <shumatsumonobu@gmail.com> (https://twitter.com/shumatsumonobu)",
+  "author": "shumatsumonobu <shumatsumonobu@gmail.com> (https://x.com/shumatsumonobu)",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/shumatsumonobu/google-map-extension/issues",

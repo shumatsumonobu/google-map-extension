@@ -1,33 +1,59 @@
-# google-map-extension
-
-[![NPM](https://img.shields.io/npm/v/google-map-extension.svg)](https://www.npmjs.com/package/google-map-extension)
-[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-
-Drop a `<google-map>` tag. Get a map. That's it.
-
-No boilerplate, no framework lock-in &mdash; just one Custom Element that wraps the Google Maps JavaScript API with a clean, declarative interface.
+<h1 align="center">
+  <br>
+  <code>&lt;google-map&gt;</code>
+  <br>
+</h1>
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/shumatsumonobu/google-map-extension/master/screencap/all.jpg" alt="google-map-extension overview" width="720">
+  <b>Google Maps as a Web Component.</b><br>
+  One tag. Zero config. Full power.
 </p>
 
----
+<p align="center">
+  <a href="https://www.npmjs.com/package/google-map-extension"><img src="https://img.shields.io/npm/v/google-map-extension.svg?style=flat-square" alt="npm"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square" alt="license"></a>
+</p>
 
-## Why?
+<p align="center">
+  <img src="./screenshots/all.jpg" alt="google-map-extension overview" width="720">
+</p>
 
-- **One tag, full map** &mdash; works out of the box with zero config
-- **6 built-in themes** &mdash; standard, silver, retro, dark, night, aubergine
-- **Markers that pop** &mdash; circles, images, and rich HTML balloons
-- **Geocoding baked in** &mdash; address &harr; coordinates in one call
-- **Distance measurement** &mdash; meters between any two points on Earth
+<br>
 
-## Install
+## What is this?
+
+A single Custom Element that wraps the Google Maps JavaScript API.
+No boilerplate. No framework lock-in. Just drop a tag and go.
+
+```html
+<google-map zoom="12" center="35.658584,139.7454316" theme="dark"></google-map>
+```
+
+That's a fully interactive dark-themed map. Really.
+
+<br>
+
+## Highlights
+
+| | |
+|---|---|
+| **One tag, full map** | Works out of the box &mdash; zero config needed |
+| **6 built-in themes** | standard, silver, retro, dark, night, aubergine |
+| **Markers that pop** | Circles, images, and rich HTML balloons |
+| **Geocoding baked in** | Address &harr; coordinates in a single call |
+| **Distance math** | Meters between any two points on Earth |
+
+<br>
+
+## Getting Started
+
+### Install
 
 ```sh
 npm install google-map-extension
 ```
 
-## Quick Start
+### Minimal Setup
 
 ```html
 <google-map
@@ -46,7 +72,9 @@ npm install google-map-extension
 </script>
 ```
 
-Done. You've got a dark-themed, fully interactive map with controls.
+That's it. You have a dark-themed, fully interactive map with controls.
+
+<br>
 
 ## Usage
 
@@ -63,7 +91,7 @@ map.on('click.map', event => {
 
 ### Drop a circle marker
 
-<img src="https://raw.githubusercontent.com/shumatsumonobu/google-map-extension/master/screencap/simple-circle-marker.png" alt="circle marker" height="200">
+<img src="./screenshots/simple-circle-marker.png" alt="circle marker" height="200">
 
 ```js
 const marker = await map.addMarker({
@@ -75,7 +103,7 @@ const marker = await map.addMarker({
 
 ### Use your own image
 
-<img src="https://raw.githubusercontent.com/shumatsumonobu/google-map-extension/master/screencap/custom-image-marker.png" alt="image marker" height="200">
+<img src="./screenshots/custom-image-marker.png" alt="image marker" height="200">
 
 ```js
 const marker = await map.addMarker({
@@ -88,7 +116,7 @@ const marker = await map.addMarker({
 
 ### Attach a balloon
 
-<img src="https://raw.githubusercontent.com/shumatsumonobu/google-map-extension/master/screencap/marker-balloon.png" alt="marker balloon" height="200">
+<img src="./screenshots/marker-balloon.png" alt="marker balloon" height="200">
 
 ```js
 const marker = await map.addMarker({
@@ -107,16 +135,16 @@ map.removeMarker(marker);
 
 ### Geocoding & distance
 
-<img src="https://raw.githubusercontent.com/shumatsumonobu/google-map-extension/master/screencap/utils.png" alt="utilities" height="200">
+<img src="./screenshots/utils.png" alt="utilities" height="200">
 
 ```js
 import { GoogleMapUtils } from 'google-map-extension';
 
-// Address to coordinates
+// Address -> coordinates
 const latlng = await GoogleMapUtils.getLatLngFromAddress('Tokyo Tower, Japan');
 // => { lat: 35.6585..., lng: 139.7454... }
 
-// Coordinates to address
+// Coordinates -> address
 const address = await GoogleMapUtils.getAddressFromLatLng({ lat: 35.6585, lng: 139.7454 });
 
 // Distance in meters (requires libraries=geometry)
@@ -126,7 +154,7 @@ const meters = GoogleMapUtils.computeDistanceBetween(
 );
 ```
 
----
+<br>
 
 ## API Reference
 
@@ -135,8 +163,8 @@ const meters = GoogleMapUtils.computeDistanceBetween(
 #### Attributes
 
 | Attribute | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `zoom` | `number` | `13` | Zoom level, 1 (world) to 21 (building) |
+|---|---|---|---|
+| `zoom` | `number` | `13` | Zoom level, 1 (world) &ndash; 21 (building) |
 | `center` | `string` | `"0,0"` | Starting position &mdash; `"lat,lng"` |
 | `type` | `string` | `"roadmap"` | `roadmap` / `satellite` / `hybrid` / `terrain` |
 | `theme` | `string` | `"standard"` | `standard` / `silver` / `retro` / `dark` / `night` / `aubergine` |
@@ -145,47 +173,40 @@ const meters = GoogleMapUtils.computeDistanceBetween(
 | `fullscreen-control` | `boolean` | &mdash; | Show fullscreen toggle |
 | `theme-control` | `boolean` | &mdash; | Show theme picker |
 
-<details>
-<summary>Zoom level previews</summary>
+##### Zoom level previews
 
 <table>
   <tr><th>Level</th><th>Preview</th><th>Level</th><th>Preview</th><th>Level</th><th>Preview</th></tr>
-  <tr><td>1</td><td><img src="https://raw.githubusercontent.com/shumatsumonobu/google-map-extension/master/screencap/zoom1.png" height="80"></td><td>8</td><td><img src="https://raw.githubusercontent.com/shumatsumonobu/google-map-extension/master/screencap/zoom8.png" height="80"></td><td>15</td><td><img src="https://raw.githubusercontent.com/shumatsumonobu/google-map-extension/master/screencap/zoom15.png" height="80"></td></tr>
-  <tr><td>2</td><td><img src="https://raw.githubusercontent.com/shumatsumonobu/google-map-extension/master/screencap/zoom2.png" height="80"></td><td>9</td><td><img src="https://raw.githubusercontent.com/shumatsumonobu/google-map-extension/master/screencap/zoom9.png" height="80"></td><td>16</td><td><img src="https://raw.githubusercontent.com/shumatsumonobu/google-map-extension/master/screencap/zoom16.png" height="80"></td></tr>
-  <tr><td>3</td><td><img src="https://raw.githubusercontent.com/shumatsumonobu/google-map-extension/master/screencap/zoom3.png" height="80"></td><td>10</td><td><img src="https://raw.githubusercontent.com/shumatsumonobu/google-map-extension/master/screencap/zoom10.png" height="80"></td><td>17</td><td><img src="https://raw.githubusercontent.com/shumatsumonobu/google-map-extension/master/screencap/zoom17.png" height="80"></td></tr>
-  <tr><td>4</td><td><img src="https://raw.githubusercontent.com/shumatsumonobu/google-map-extension/master/screencap/zoom4.png" height="80"></td><td>11</td><td><img src="https://raw.githubusercontent.com/shumatsumonobu/google-map-extension/master/screencap/zoom11.png" height="80"></td><td>18</td><td><img src="https://raw.githubusercontent.com/shumatsumonobu/google-map-extension/master/screencap/zoom18.png" height="80"></td></tr>
-  <tr><td>5</td><td><img src="https://raw.githubusercontent.com/shumatsumonobu/google-map-extension/master/screencap/zoom5.png" height="80"></td><td>12</td><td><img src="https://raw.githubusercontent.com/shumatsumonobu/google-map-extension/master/screencap/zoom12.png" height="80"></td><td>19</td><td><img src="https://raw.githubusercontent.com/shumatsumonobu/google-map-extension/master/screencap/zoom19.png" height="80"></td></tr>
-  <tr><td>6</td><td><img src="https://raw.githubusercontent.com/shumatsumonobu/google-map-extension/master/screencap/zoom6.png" height="80"></td><td>13</td><td><img src="https://raw.githubusercontent.com/shumatsumonobu/google-map-extension/master/screencap/zoom13.png" height="80"></td><td>20</td><td><img src="https://raw.githubusercontent.com/shumatsumonobu/google-map-extension/master/screencap/zoom20.png" height="80"></td></tr>
-  <tr><td>7</td><td><img src="https://raw.githubusercontent.com/shumatsumonobu/google-map-extension/master/screencap/zoom7.png" height="80"></td><td>14</td><td><img src="https://raw.githubusercontent.com/shumatsumonobu/google-map-extension/master/screencap/zoom14.png" height="80"></td><td>21</td><td><img src="https://raw.githubusercontent.com/shumatsumonobu/google-map-extension/master/screencap/zoom21.png" height="80"></td></tr>
+  <tr><td>1</td><td><img src="./screenshots/zoom1.png" height="80"></td><td>8</td><td><img src="./screenshots/zoom8.png" height="80"></td><td>15</td><td><img src="./screenshots/zoom15.png" height="80"></td></tr>
+  <tr><td>2</td><td><img src="./screenshots/zoom2.png" height="80"></td><td>9</td><td><img src="./screenshots/zoom9.png" height="80"></td><td>16</td><td><img src="./screenshots/zoom16.png" height="80"></td></tr>
+  <tr><td>3</td><td><img src="./screenshots/zoom3.png" height="80"></td><td>10</td><td><img src="./screenshots/zoom10.png" height="80"></td><td>17</td><td><img src="./screenshots/zoom17.png" height="80"></td></tr>
+  <tr><td>4</td><td><img src="./screenshots/zoom4.png" height="80"></td><td>11</td><td><img src="./screenshots/zoom11.png" height="80"></td><td>18</td><td><img src="./screenshots/zoom18.png" height="80"></td></tr>
+  <tr><td>5</td><td><img src="./screenshots/zoom5.png" height="80"></td><td>12</td><td><img src="./screenshots/zoom12.png" height="80"></td><td>19</td><td><img src="./screenshots/zoom19.png" height="80"></td></tr>
+  <tr><td>6</td><td><img src="./screenshots/zoom6.png" height="80"></td><td>13</td><td><img src="./screenshots/zoom13.png" height="80"></td><td>20</td><td><img src="./screenshots/zoom20.png" height="80"></td></tr>
+  <tr><td>7</td><td><img src="./screenshots/zoom7.png" height="80"></td><td>14</td><td><img src="./screenshots/zoom14.png" height="80"></td><td>21</td><td><img src="./screenshots/zoom21.png" height="80"></td></tr>
 </table>
 
-</details>
-
-<details>
-<summary>Map type previews</summary>
+##### Map type previews
 
 | Type | What you get | Preview |
-|------|-------------|---------|
-| `roadmap` | Classic road map | <img src="https://raw.githubusercontent.com/shumatsumonobu/google-map-extension/master/screencap/type-roadmap.png" height="120"> |
-| `satellite` | Google Earth imagery | <img src="https://raw.githubusercontent.com/shumatsumonobu/google-map-extension/master/screencap/type-satellite.png" height="120"> |
-| `hybrid` | Satellite + road labels | <img src="https://raw.githubusercontent.com/shumatsumonobu/google-map-extension/master/screencap/type-hybrid.png" height="120"> |
-| `terrain` | Elevation & terrain | <img src="https://raw.githubusercontent.com/shumatsumonobu/google-map-extension/master/screencap/type-terrain.png" height="120"> |
+|---|---|---|
+| `roadmap` | Classic road map | <img src="./screenshots/type-roadmap.png" height="120"> |
+| `satellite` | Google Earth imagery | <img src="./screenshots/type-satellite.png" height="120"> |
+| `hybrid` | Satellite + road labels | <img src="./screenshots/type-hybrid.png" height="120"> |
+| `terrain` | Elevation & terrain | <img src="./screenshots/type-terrain.png" height="120"> |
 
-</details>
-
-<details>
-<summary>Theme previews</summary>
+##### Theme previews
 
 | Theme | Preview |
-|-------|---------|
-| `standard` | <img src="https://raw.githubusercontent.com/shumatsumonobu/google-map-extension/master/screencap/theme-standard.png" height="120"> |
-| `silver` | <img src="https://raw.githubusercontent.com/shumatsumonobu/google-map-extension/master/screencap/theme-silver.png" height="120"> |
-| `retro` | <img src="https://raw.githubusercontent.com/shumatsumonobu/google-map-extension/master/screencap/theme-retro.png" height="120"> |
-| `dark` | <img src="https://raw.githubusercontent.com/shumatsumonobu/google-map-extension/master/screencap/theme-dark.png" height="120"> |
-| `night` | <img src="https://raw.githubusercontent.com/shumatsumonobu/google-map-extension/master/screencap/theme-night.png" height="120"> |
-| `aubergine` | <img src="https://raw.githubusercontent.com/shumatsumonobu/google-map-extension/master/screencap/theme-aubergine.png" height="120"> |
+|---|---|
+| `standard` | <img src="./screenshots/theme-standard.png" height="120"> |
+| `silver` | <img src="./screenshots/theme-silver.png" height="120"> |
+| `retro` | <img src="./screenshots/theme-retro.png" height="120"> |
+| `dark` | <img src="./screenshots/theme-dark.png" height="120"> |
+| `night` | <img src="./screenshots/theme-night.png" height="120"> |
+| `aubergine` | <img src="./screenshots/theme-aubergine.png" height="120"> |
 
-</details>
+<br>
 
 #### Events
 
@@ -199,11 +220,15 @@ map.on('click.map', event => {
 });
 ```
 
+<br>
+
 #### Properties
 
 | Property | Type | Description |
-|----------|------|-------------|
+|---|---|---|
 | `map` | `google.maps.Map` | Raw [Maps JavaScript API](https://developers.google.com/maps/documentation/javascript/reference/map) instance &mdash; full power when you need it |
+
+<br>
 
 #### Methods
 
@@ -223,15 +248,15 @@ map.addMarker(option?: {
 ```
 
 | Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
+|---|---|---|---|
 | `position` | `{ lat, lng }` | Map center | Where to place the marker |
 | `size` | `number` | `50` | Diameter in pixels |
 | `visible` | `boolean` | `true` | Show on creation |
-| `image` | `string` | `undefined` | Image URL inside the marker |
+| `image` | `string` | &mdash; | Image URL inside the marker |
 | `color` | `string` | `"rgb(0,122,255)"` | Fill color |
-| `info` | `string` | `undefined` | Balloon content (HTML ok) |
+| `info` | `string` | &mdash; | Balloon content (HTML ok) |
 
-**Returns** `Promise<GoogleMapCircleMarker>`
+Returns `Promise<GoogleMapCircleMarker>`
 
 ##### `removeMarker(marker)`
 
@@ -265,9 +290,9 @@ map.zoomToFitAllPositions(
 ): GoogleMap
 ```
 
----
+<br>
 
-### GoogleMapCircleMarker
+### `GoogleMapCircleMarker`
 
 The marker object returned by `addMarker()`.
 
@@ -316,9 +341,9 @@ Dismiss the balloon.
 marker.clearInfo(): GoogleMapCircleMarker
 ```
 
----
+<br>
 
-### GoogleMapUtils
+### `GoogleMapUtils`
 
 Standalone helpers &mdash; no map instance required.
 
@@ -370,11 +395,11 @@ GoogleMapUtils.computeDistanceBetween(
 ): number
 ```
 
----
+<br>
 
 ## Examples
 
-Check the [examples/](./examples) directory for working demos.
+Working demos are in the [examples/](./examples) directory.
 
 ## License
 

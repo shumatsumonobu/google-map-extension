@@ -35,7 +35,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/).
 
 - Marker balloons &mdash; attach rich HTML callouts to any marker via `info` option, `setInfo()`, and `clearInfo()`.
 
-  <img src="https://raw.githubusercontent.com/shumatsumonobu/google-map-extension/master/screencap/marker-balloon.png" alt="marker balloon" height="160">
+  <img src="./screenshots/marker-balloon.png" alt="marker balloon" height="160">
 
 ## [1.0.9] - 2020-10-11
 

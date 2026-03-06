@@ -3,35 +3,77 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Google Map Marker</title>
+  <title>Marker Operations — google-map-extension</title>
   <style>
     html, body { height: 100%; }
-    body { margin: 0; }
+    body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
 
-    /* Floating control panel */
-    .floating-panel {
+    .toolbar {
       position: absolute;
-      top: 10px;
-      left: 10px;
-      padding: 5px 10px;
-      line-height: 30px;
-      text-align: center;
-      border: 1px solid #999;
-      background-color: #fff;
+      top: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 8px;
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(8px);
+      padding: 8px 16px;
+      border-radius: 10px;
+      z-index: 1;
     }
+    .toolbar button {
+      background: #333;
+      color: #fff;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.15s;
+    }
+    .toolbar button:hover { background: #555; }
+    .toolbar button.primary { background: rgb(0,122,255); }
+    .toolbar button.primary:hover { background: rgb(0,100,220); }
+    .toolbar button.danger { background: rgb(255,59,48); }
+    .toolbar button.danger:hover { background: rgb(200,44,36); }
+
+    .counter {
+      position: absolute;
+      bottom: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(8px);
+      color: #888;
+      padding: 8px 20px;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      z-index: 1;
+      pointer-events: none;
+    }
+    .counter strong { color: #fff; }
   </style>
 </head>
 <body>
 
+  <!--
+    Demo: Marker Operations
+    Add, remove, and auto-zoom markers using the floating toolbar.
+    Demonstrates addMarker(), removeMarker(), and zoomToFitAllPositions().
+  -->
+
   <google-map id="map" zoom="12" center="35.658584,139.7454316" theme="dark"></google-map>
 
-  <!-- Control buttons for marker operations -->
-  <div class="floating-panel">
-    <button type="button" id="addMarker">Add Marker</button>
-    <button type="button" id="deleteMarkers">Delete All Markers</button>
-    <button type="button" id="addMarkers">Randomly add markers</button>
-    <button type="button" id="zoomToFit">Zoom to fit all markers</button>
+  <div class="toolbar">
+    <button type="button" id="addMarker" class="primary">+ Add One</button>
+    <button type="button" id="addMarkers">+ Add 10 Random</button>
+    <button type="button" id="zoomToFit">Fit All in View</button>
+    <button type="button" id="deleteMarkers" class="danger">Clear All</button>
   </div>
+
+  <div class="counter">Markers on map: <strong id="count">0</strong></div>
 
   <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&language=en"></script>
   <script type="module">
@@ -40,6 +82,12 @@
     (async () => {
       const map = document.querySelector('#map');
       const markers = [];
+      const countEl = document.querySelector('#count');
+
+      /** Update the marker counter display */
+      function updateCount() {
+        countEl.textContent = markers.length;
+      }
 
       // Available marker colors
       const COLORS = [
@@ -60,28 +108,33 @@
         return { lat, lng };
       }
 
-      // Add a single marker
+      // Add a single marker at a random position
       document.querySelector('#addMarker').addEventListener('click', async () => {
         const marker = await map.addMarker({ color: randomColor(), position: randomLatLng() });
         markers.push(marker);
+        updateCount();
       });
 
-      // Remove all markers
-      document.querySelector('#deleteMarkers').addEventListener('click', () => {
-        for (let marker of markers) map.removeMarker(marker);
-      });
-
-      // Add 10 random markers at once
+      // Batch-add 10 random markers
       document.querySelector('#addMarkers').addEventListener('click', async () => {
         for (let i = 0; i < 10; i++) {
           const marker = await map.addMarker({ color: randomColor(), position: randomLatLng() });
           markers.push(marker);
         }
+        updateCount();
       });
 
       // Auto-zoom to fit every marker in view
       document.querySelector('#zoomToFit').addEventListener('click', () => {
+        if (markers.length === 0) return;
         map.zoomToFitAllPositions(markers);
+      });
+
+      // Remove every marker from the map
+      document.querySelector('#deleteMarkers').addEventListener('click', () => {
+        for (let marker of markers) map.removeMarker(marker);
+        markers.length = 0;
+        updateCount();
       });
     })();
   </script>

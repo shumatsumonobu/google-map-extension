@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Marker Balloon — google-map-extension</title>
+  <style>
+    html, body { height: 100%; }
+    body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+
+    .caption {
+      position: absolute;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(8px);
+      color: #fff;
+      padding: 12px 24px;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      text-align: center;
+      line-height: 1.5;
+      pointer-events: none;
+      z-index: 1;
+    }
+    .caption strong { color: rgb(255,45,85); }
+  </style>
+</head>
+<body>
+
+  <!--
+    Demo: Marker Balloon
+    Places a marker with an info-window balloon that shows the
+    reverse-geocoded address of the marker's position.
+  -->
+
+  <google-map id="map" zoom="15" center="35.658584,139.7454316" theme="dark"></google-map>
+
+  <div class="caption">
+    The marker shows a <strong>balloon</strong> with the reverse-geocoded address.<br>
+    Click the marker to reopen it after closing.
+  </div>
+
+  <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&language=en"></script>
+  <script type="module">
+    import { GoogleMapUtils } from '../dist/build.esm.js';
+
+    (async () => {
+      const map = document.querySelector('#map');
+      const position = { lat: 35.658584, lng: 139.7454316 };
+
+      // Reverse-geocode the position to get a human-readable address
+      const address = await GoogleMapUtils.getAddressFromLatLng(position);
+
+      // Place a marker with the address shown as a balloon
+      await map.addMarker({
+        image: 'image/face6.png',
+        color: 'rgb(255,45,85)',
+        size: 80,
+        position,
+        info: address,
+      });
+    })();
+  </script>
+</body>
+</html>

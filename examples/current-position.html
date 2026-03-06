@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Current Position — google-map-extension</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #111;
+      color: #fff;
+    }
+    .container { max-width: 800px; margin: 0 auto; padding: 24px; }
+    h1 { font-size: 1.4rem; margin-bottom: 4px; }
+    p.subtitle { font-size: 0.85rem; color: #666; margin-bottom: 20px; }
+
+    #status {
+      font-size: 0.8rem;
+      padding: 8px 14px;
+      border-radius: 6px;
+      margin-bottom: 14px;
+    }
+    #status.loading { background: #1a1a1a; color: #888; }
+    #status.success { background: rgba(52,199,89,0.15); color: rgb(52,199,89); }
+    #status.error   { background: rgba(255,59,48,0.15); color: rgb(255,59,48); }
+
+    .info-bar {
+      display: flex;
+      gap: 16px;
+      background: #1a1a1a;
+      border-radius: 8px;
+      padding: 14px 20px;
+      margin-bottom: 16px;
+      font-size: 0.9rem;
+    }
+    .info-bar .label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      color: #555;
+      margin-bottom: 2px;
+    }
+    .info-bar .value { color: #fff; }
+    .info-bar .address { flex: 2; }
+  </style>
+</head>
+<body>
+
+  <!--
+    Demo: Current Position
+    Uses getCurrentPosition() to detect the device's GPS location,
+    then displays lat/lng and the reverse-geocoded address.
+    Clicking the map moves the marker and updates the info bar.
+  -->
+
+  <div class="container">
+    <h1>Current Position</h1>
+    <p class="subtitle">Detect your GPS location, then click anywhere on the map to explore nearby addresses.</p>
+
+    <div id="status" class="loading">Requesting location permission...</div>
+
+    <div class="info-bar">
+      <div>
+        <div class="label">Latitude</div>
+        <div class="value" id="lat">—</div>
+      </div>
+      <div>
+        <div class="label">Longitude</div>
+        <div class="value" id="lng">—</div>
+      </div>
+      <div class="address">
+        <div class="label">Address</div>
+        <div class="value" id="address">—</div>
+      </div>
+    </div>
+
+    <google-map id="map" zoom="14" center="35.658584,139.7454316" theme="dark" style="height: 450px; border-radius: 8px;"></google-map>
+  </div>
+
+  <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&language=en"></script>
+  <script type="module">
+    import { GoogleMapUtils } from '../dist/build.esm.js';
+
+    const map = document.querySelector('#map');
+    const statusEl = document.querySelector('#status');
+
+    /** Set the status bar state and message */
+    function setStatus(state, message) {
+      statusEl.className = state;
+      statusEl.textContent = message;
+    }
+
+    /** Update the info bar with a position's lat, lng, and reverse-geocoded address */
+    async function showPosition(position) {
+      document.querySelector('#lat').textContent = position.lat.toFixed(6);
+      document.querySelector('#lng').textContent = position.lng.toFixed(6);
+      document.querySelector('#address').textContent = 'Resolving address...';
+
+      const address = await GoogleMapUtils.getAddressFromLatLng(position);
+      document.querySelector('#address').textContent = address || 'No address found';
+    }
+
+    (async () => {
+      try {
+        // Detect the device's current GPS location
+        const currentPosition = await GoogleMapUtils.getCurrentPosition({ timeout: 10000 });
+        setStatus('success', 'Location detected — click anywhere on the map to look up its address.');
+
+        // Centre the map and show the position info
+        map.moveToPosition(currentPosition);
+        await showPosition(currentPosition);
+
+        // Place a marker at the detected location
+        const marker = await map.addMarker({ position: currentPosition, size: 40 });
+
+        // Move the marker and update info when the map is clicked
+        map.on('click.map', async event => {
+          const clickedPosition = event.detail;
+          marker.moveToPosition(clickedPosition);
+          await showPosition(clickedPosition);
+        });
+      } catch (e) {
+        setStatus('error', `Location unavailable — ${e.message}`);
+      }
+    })();
+  </script>
+</body>
+</html>
