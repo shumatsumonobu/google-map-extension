@@ -5,6 +5,12 @@ Format follows [Keep a Changelog](https://keepachangelog.com/).
 
 ---
 
+## [1.0.15] - 2026-03-06
+
+### Changed
+
+- Reformatted documentation and improved example demos.
+
 ## [1.0.14] - 2020-11-07
 
 ### Added
